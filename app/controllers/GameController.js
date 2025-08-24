@@ -61,15 +61,13 @@ exports.CreateNewGame = (req,res)=>{
     let list = ListCard;
     let CardsAxe = getMultipleCard(list,6)
     let CardsAllies = getMultipleCard(list,6)
-    let newGame = new Game({Cards:ListCard,CardsAxe:CardsAxe,CardsAllies:CardsAllies,createdAt:new Date().getTime()});
+    let newGame = new Game({_id:req.body.gamename,Cards:ListCard,CardsAxe:CardsAxe,CardsAllies:CardsAllies,createdAt:new Date().getTime()});
     newGame.save((error, game) => {
         if (error ) {
           res.status(401);   
           res.json({ message: "Requête invalide" });
         } else {
-          // Envoi de l'e-mail de confirmation
-          res.status(200);
-          res.json({ message: `Partie Crée ! id:${game._id}` });
+          res.json(game)
         }
       });
 }
