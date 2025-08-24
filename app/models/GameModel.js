@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 let CardSchema = new Schema({
+    GameName: {
+        type: String,
+        require: true
+    },
     Cards: [{
         type: String,
         require: true

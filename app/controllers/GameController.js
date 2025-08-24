@@ -61,7 +61,8 @@ exports.CreateNewGame = (req,res)=>{
     let list = ListCard;
     let CardsAxe = getMultipleCard(list,6)
     let CardsAllies = getMultipleCard(list,6)
-    let newGame = new Game({_id:req.body.gamename,Cards:ListCard,CardsAxe:CardsAxe,CardsAllies:CardsAllies,createdAt:new Date().getTime()});
+    
+    let newGame = new Game({GameName:req.body.gamename,Cards:ListCard,CardsAxe:CardsAxe,CardsAllies:CardsAllies,createdAt:new Date().getTime()});
     newGame.save((error, game) => {
         if (error ) {
           res.status(401);   
@@ -73,7 +74,7 @@ exports.CreateNewGame = (req,res)=>{
 }
 
 exports.GetCards = (req,res)=>{
-  Game.findById((req.params.gameid),(error,game)=>{
+  Game.findOne({GameName:req.params.gameid},(error,game)=>{
     if (error ) {
       res.status(401);   
       res.json({ message: "Requête invalide" });
@@ -83,7 +84,7 @@ exports.GetCards = (req,res)=>{
 }
 
 exports.Play = (req,res)=>{
-  Game.findById((req.params.gameid),(error,game)=>{
+  Game.findOne({GameName:req.params.gameid},(error,game)=>{
     if (error ) {
       res.status(401);   
       res.json({ message: "Requête invalide" });
@@ -101,7 +102,7 @@ exports.Play = (req,res)=>{
         CardsAllies.splice(req.body.RemoveCardIndex,1);
         CardsAllies.push(newCard)
       }
-      Game.findByIdAndUpdate(req.params.gameid,{Cards:Cards,CardsAxe:CardsAxe, CardsAllies:CardsAllies}, { new: true },(error, newgame) => {
+      Game.findOneAndUpdate({GameName:req.params.gameid},{Cards:Cards,CardsAxe:CardsAxe, CardsAllies:CardsAllies}, { new: true },(error, newgame) => {
         if (error ) {
           res.status(401);   
           res.json({ message: "Requête invalide" });
