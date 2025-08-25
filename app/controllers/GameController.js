@@ -58,7 +58,7 @@ function getMultipleCard(list, count) {
   return results;
 }
 exports.CreateNewGame = (req,res)=>{
-    let list = ListCard;
+    let list = [...ListCard];
     let CardsAxe = getMultipleCard(list,6)
     let CardsAllies = getMultipleCard(list,6)
     
