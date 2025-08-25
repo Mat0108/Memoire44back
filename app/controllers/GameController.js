@@ -99,11 +99,9 @@ exports.Play = (req,res)=>{
         let CardsAllies = game.CardsAllies
         
         if(req.body.userPlay === "Axe"){
-          CardsAxe.splice(req.body.RemoveCardId,1);
-          CardsAxe.push(newCard)
+          CardsAxe[req.body.RemoveCardIndex] = newCard
         }else{
-          CardsAllies.splice(req.body.RemoveCardIndex,1);
-          CardsAllies.push(newCard)
+          CardsAllies[req.body.RemoveCardIndex] = newCard
         }
         Game.findOneAndUpdate({GameName:req.params.gameid},{Cards:Cards,CardsAxe:CardsAxe, CardsAllies:CardsAllies}, { new: true },(error, newgame) => {
           if (error ) {
