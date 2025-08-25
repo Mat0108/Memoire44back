@@ -89,28 +89,31 @@ exports.Play = (req,res)=>{
       res.status(401);   
       res.json({ message: "Requête invalide" });
     } else {
-      let Cards = game.Cards
+      if(game && game.Cards){
+
       
-      let newCard = getCard(Cards)
-      let CardsAxe = game.CardsAxe
-      let CardsAllies = game.CardsAllies
-      
-      if(req.body.userPlay === "Axe"){
-        CardsAxe.splice(req.body.RemoveCardId,1);
-        CardsAxe.push(newCard)
-      }else{
-        CardsAllies.splice(req.body.RemoveCardIndex,1);
-        CardsAllies.push(newCard)
+        let Cards = game.Cards
+        
+        let newCard = getCard(Cards)
+        let CardsAxe = game.CardsAxe
+        let CardsAllies = game.CardsAllies
+        
+        if(req.body.userPlay === "Axe"){
+          CardsAxe.splice(req.body.RemoveCardId,1);
+          CardsAxe.push(newCard)
+        }else{
+          CardsAllies.splice(req.body.RemoveCardIndex,1);
+          CardsAllies.push(newCard)
+        }
+        Game.findOneAndUpdate({GameName:req.params.gameid},{Cards:Cards,CardsAxe:CardsAxe, CardsAllies:CardsAllies}, { new: true },(error, newgame) => {
+          if (error ) {
+            res.status(401);   
+            res.json({ message: "Requête invalide" });
+          } else {
+            console.log(newCard)
+            res.json(newgame)
+          }})
       }
-      Game.findOneAndUpdate({GameName:req.params.gameid},{Cards:Cards,CardsAxe:CardsAxe, CardsAllies:CardsAllies}, { new: true },(error, newgame) => {
-        if (error ) {
-          res.status(401);   
-          res.json({ message: "Requête invalide" });
-        } else {
-          console.log(newCard)
-          res.json(newgame)
-        }})
-      
     }
   })
 }
