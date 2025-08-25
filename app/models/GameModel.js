@@ -10,6 +10,9 @@ let CardSchema = new Schema({
         type: String,
         require: true
     }],
+    Graveyard:[
+        {type:String}
+    ],
     CardsAxe:[{
         type: String,
         require: true

@@ -62,7 +62,7 @@ exports.CreateNewGame = (req,res)=>{
     let CardsAxe = getMultipleCard(list,6)
     let CardsAllies = getMultipleCard(list,6)
     
-    let newGame = new Game({GameName:req.body.gamename,Cards:ListCard,CardsAxe:CardsAxe,CardsAllies:CardsAllies,createdAt:new Date().getTime()});
+    let newGame = new Game({GameName:req.body.gamename,Cards:ListCard,CardsAxe:CardsAxe,CardsAllies:CardsAllies,Graveyard:[],createdAt:new Date().getTime()});
     newGame.save((error, game) => {
         if (error ) {
           res.status(401);   
@@ -89,26 +89,33 @@ exports.Play = (req,res)=>{
       res.status(401);   
       res.json({ message: "Requête invalide" });
     } else {
-      if(game && game.Cards){
-
+      if(game && (game.Cards || game.Graveyard )){
       
         let Cards = game.Cards
+        let Graveyard = game.Graveyard;
+        if(game.Cards.length <= 0){
+          Cards = game.Graveyard
+          Graveyard = [];
+
+        } 
+        
         
         let newCard = getCard(Cards)
         let CardsAxe = game.CardsAxe
         let CardsAllies = game.CardsAllies
-        
         if(req.body.userPlay === "Axe"){
+          Graveyard.push(CardsAxe[req.body.RemoveCardIndex]); 
           CardsAxe[req.body.RemoveCardIndex] = newCard
+           
         }else{
+          Graveyard.push(CardsAllies[req.body.RemoveCardIndex])
           CardsAllies[req.body.RemoveCardIndex] = newCard
         }
-        Game.findOneAndUpdate({GameName:req.params.gameid},{Cards:Cards,CardsAxe:CardsAxe, CardsAllies:CardsAllies}, { new: true },(error, newgame) => {
-          if (error ) {
+        Game.findOneAndUpdate({GameName:req.params.gameid},{Cards:Cards,CardsAxe:CardsAxe, CardsAllies:CardsAllies,Graveyard:Graveyard}, { new: true },(error, newgame) => {
+          if (error) {
             res.status(401);   
             res.json({ message: "Requête invalide" });
           } else {
-            console.log(newCard)
             res.json(newgame)
           }})
       }
